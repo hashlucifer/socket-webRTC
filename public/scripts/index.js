@@ -111,7 +111,7 @@ socket.on("answer-made", async data => {
     );
 
     if (!isAlreadyCalling) {
-        callUser(data.socket);
+        // callUser(data.socket);
         isAlreadyCalling = true;
     }
 });
@@ -124,6 +124,7 @@ socket.on("call-rejected", data => {
 peerConnection.ontrack = function ({ streams: [stream] }) {
     const remoteVideo = document.getElementById("remote-video");
     if (remoteVideo) {
+        console.log('REMOTE VIDEO STARTED');
         remoteVideo.srcObject = stream;
     }
 };
