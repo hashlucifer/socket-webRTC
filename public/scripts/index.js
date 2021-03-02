@@ -121,11 +121,11 @@ socket.on("call-rejected", data => {
     unselectUsersFromList();
 });
 
-peerConnection.ontrack = function ({ streams: [stream] }) {
+peerConnection.ontrack = function (event) {
     const remoteVideo = document.getElementById("remote-video");
     if (remoteVideo) {
         console.log('REMOTE VIDEO STARTED');
-        remoteVideo.srcObject = stream;
+        remoteVideo.srcObject = event.streams[0];
     }
 };
 
