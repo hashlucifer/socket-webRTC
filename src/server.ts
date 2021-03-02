@@ -10,7 +10,7 @@ export class Server {
 
     private activeSockets: string[] = [];
 
-    private readonly DEFAULT_PORT = 5000;
+    private readonly DEFAULT_PORT = process.env.PORT || 5000;
 
     constructor() {
         this.initialize();
@@ -31,9 +31,9 @@ export class Server {
     }
 
     private configureRoutes(): void {
-        // this.app.get("/", (req, res) => {
-        //     res.sendFile("index.html");
-        // });
+        this.app.get("/", (req, res) => {
+            res.sendFile("index.html");
+        });
     }
 
     private handleSocketConnection(): void {
@@ -44,13 +44,13 @@ export class Server {
 
             if (!existingSocket) {
                 this.activeSockets.push(socket.id);
-                //new user must know exsisting users in same connection
+
                 socket.emit("update-user-list", {
                     users: this.activeSockets.filter(
                         existingSocket => existingSocket !== socket.id
                     )
                 });
-                //all user must know that new users joined same connection
+
                 socket.broadcast.emit("update-user-list", {
                     users: [socket.id]
                 });
@@ -88,9 +88,8 @@ export class Server {
     }
 
     public listen(callback: (port: number) => void): void {
-        this.httpServer.listen(process.env.PORT || this.DEFAULT_PORT, () => {
-            console.log(process.env.PORT)
-            callback(+process.env.PORT || this.DEFAULT_PORT);
+        this.httpServer.listen(this.DEFAULT_PORT, () => {
+            callback(this.DEFAULT_PORT);
         });
     }
 }
