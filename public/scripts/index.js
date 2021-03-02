@@ -92,9 +92,7 @@ socket.on("call-made", async data => {
         }
     }
 
-    await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(data.offer)
-    );
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
 
@@ -102,16 +100,14 @@ socket.on("call-made", async data => {
         answer,
         to: data.socket
     });
-    getCalled = true;
+    // getCalled = true;
 });
 
 socket.on("answer-made", async data => {
-    await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(data.answer)
-    );
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
 
     if (!isAlreadyCalling) {
-        // callUser(data.socket);
+        callUser(data.socket);
         isAlreadyCalling = true;
     }
 });
