@@ -120,7 +120,7 @@ socket.on("call-rejected", data => {
 peerConnection.ontrack = function (ev) {
     const remoteVideo = document.getElementById("remote-video");
     if (remoteVideo) {
-        if (remoteView.srcObject) return;
+        if (remoteVideo.srcObject) return;
         console.log('REMOTE VIDEO STARTED', ev.streams[0]);
         remoteVideo.srcObject = ev.streams[0];
     }
