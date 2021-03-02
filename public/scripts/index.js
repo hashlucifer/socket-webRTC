@@ -125,18 +125,33 @@ try {
         }
     };
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(function (stream) {
-
+    navigator.getUserMedia(
+        { video: true, audio: true },
+        stream => {
             const localVideo = document.getElementById("local-video");
             if (localVideo) {
                 localVideo.srcObject = stream;
             }
+
             stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-        }).catch(error => {
+        },
+        error => {
             console.warn(error.message);
-        })
-    }
+        }
+    );
+
+    // if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    //     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(function (stream) {
+
+    //         const localVideo = document.getElementById("local-video");
+    //         if (localVideo) {
+    //             localVideo.srcObject = stream;
+    //         }
+    //         stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+    //     }).catch(error => {
+    //         console.warn(error.message);
+    //     })
+    // }
 } catch (e) {
     alert(e.stack)
 }
