@@ -1,5 +1,5 @@
 let isAlreadyCalling = false;
-let getCalled = false;
+let getCalled = true;
 
 const existingCalls = [];
 
@@ -100,7 +100,7 @@ socket.on("call-made", async data => {
         answer,
         to: data.socket
     });
-    getCalled = true;
+    getCalled = false;
 });
 
 socket.on("answer-made", async data => {
