@@ -64,7 +64,7 @@ try {
         });
     }
 
-    const socket = io.connect("localhost:5000");
+    const socket = io.connect(window.location.href);
 
     socket.on("update-user-list", ({ users }) => {
         updateUserList(users);
