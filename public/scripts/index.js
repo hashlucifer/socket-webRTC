@@ -118,19 +118,19 @@ socket.on("call-rejected", data => {
 });
 
 peerConnection.ontrack = function (ev) {
-    // const remoteVideo = document.getElementById("remote-video");
-    // if (remoteVideo) {
-    //     if (remoteView.srcObject) return;
-    //     console.log('REMOTE VIDEO STARTED', event, event.streams);
-    //     remoteVideo.srcObject = event.streams[0];
-    // }
-
-    if (ev.streams && ev.streams[0]) {
+    const remoteVideo = document.getElementById("remote-video");
+    if (remoteVideo) {
+        if (remoteView.srcObject) return;
+        console.log('REMOTE VIDEO STARTED', ev.streams[0]);
         remoteVideo.srcObject = ev.streams[0];
-    } else {
-        let inboundStream = new MediaStream(ev.track);
-        remoteVideo.srcObject = inboundStream;
     }
+
+    // if (ev.streams && ev.streams[0]) {
+    //     remoteVideo.srcObject = ev.streams[0];
+    // } else {
+    //     let inboundStream = new MediaStream(ev.track);
+    //     remoteVideo.srcObject = inboundStream;
+    // }
 };
 
 navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
