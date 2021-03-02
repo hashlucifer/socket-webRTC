@@ -45,7 +45,7 @@ async function callUser(socketId) {
     await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
     console.log("Calling user");
     socket.emit("call-user", {
-        offer,
+        offer: peerConnection.localDescription,
         to: socketId
     });
 }
@@ -90,24 +90,24 @@ socket.on("call-made", async data => {
 
             return;
         }
+        console.log("Call-made")
+        await peerConnection.setRemoteDescription(data.offer);
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
+        console.log("Making Answer");
+        socket.emit("make-answer", {
+            answer: peerConnection.localDescription,
+            to: data.socket
+        });
+        getCalled = false;
     }
-    console.log("Call-made")
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
-    console.log("Making Answer");
-    socket.emit("make-answer", {
-        answer,
-        to: data.socket
-    });
-    getCalled = false;
 });
 
 socket.on("answer-made", async data => {
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-    console.log("answer-made")
     if (!isAlreadyCalling) {
         // callUser(data.socket);
+        await peerConnection.setRemoteDescription(data.answer);
+        console.log("answer-made")
         isAlreadyCalling = true;
     }
 });
@@ -120,22 +120,17 @@ socket.on("call-rejected", data => {
 peerConnection.ontrack = function (event) {
     const remoteVideo = document.getElementById("remote-video");
     if (remoteVideo) {
-        console.log('REMOTE VIDEO STARTED');
+        console.log('REMOTE VIDEO STARTED', event, event.streams);
         remoteVideo.srcObject = event.streams[0];
     }
 };
 
-navigator.getUserMedia(
-    { video: true, audio: true },
-    stream => {
-        const localVideo = document.getElementById("local-video");
-        if (localVideo) {
-            localVideo.srcObject = stream;
-        }
-
-        stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-    },
-    error => {
-        console.warn(error.message);
+navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+    const localVideo = document.getElementById("local-video");
+    if (localVideo) {
+        localVideo.srcObject = stream;
     }
-);
+    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+}).catch(error => {
+    console.error(error.message);
+})
