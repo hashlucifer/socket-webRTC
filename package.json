@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node build/index.js",
     "build": "tsc",
-    "web": "node build/index.js",
+    "start:watch": "ts-node src/index.ts",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
   },
   "keywords": [
