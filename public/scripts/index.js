@@ -43,7 +43,7 @@ function createUserItemContainer(socketId) {
 async function callUser(socketId) {
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-
+    console.log("Calling user");
     socket.emit("call-user", {
         offer,
         to: socketId
@@ -91,11 +91,11 @@ socket.on("call-made", async data => {
             return;
         }
     }
-
+    console.log("Call-made")
     await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
-
+    console.log("Making Answer");
     socket.emit("make-answer", {
         answer,
         to: data.socket
@@ -105,7 +105,7 @@ socket.on("call-made", async data => {
 
 socket.on("answer-made", async data => {
     await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-
+    console.log("answer-made")
     if (!isAlreadyCalling) {
         callUser(data.socket);
         isAlreadyCalling = true;
